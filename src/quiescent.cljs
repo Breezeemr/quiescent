@@ -1,4 +1,5 @@
-(ns quiescent)
+(ns quiescent
+  [:require-macros [quiescent :as q]])
 
 (def ^:dynamic *component*
   "Within a component render function, will be bound to the raw
@@ -16,20 +17,35 @@
   but will *not* be included in any calculations regarding whether the
   component should re-render."
   [renderer]
-  (let [react-component
-        (.createClass js/React
-           #js {:shouldComponentUpdate
-                (fn [next-props _]
-                  (this-as this
-                           (not= (aget (.-props this) "value")
-                                 (aget next-props "value"))))
-                :render
-                (fn []
-                  (this-as this
-                           (binding [*component* this]
-                             (apply renderer
-                                    (aget (.-props this) "value")
-                                    (aget (.-props this) "statics")))))})]
+  (let [m (meta renderer)
+         react-map
+         (cond-> #js {:shouldComponentUpdate
+                       (fn [next-props _]
+                         (this-as this
+                                  (not= (aget (.-props this) "value")
+                                        (aget next-props "value"))))
+                      :render
+                       (fn []
+                         (this-as this
+                                  (binding [*component* this]
+                                    (apply renderer
+                                           (aget (.-props this) "value")
+                                           (aget (.-props this) "statics")))))}
+                 (:componentWillMount m)
+                 (q/set-prop! -componentWillMount (:componentWillMount m))
+                 (:componentDidMount m)
+                 (q/set-prop! -componentDidMount (:componentDidMount m))
+                 (:componentWillReceiveProps m)
+                 (q/set-prop! -componentWillReceiveProps (:componentWillReceiveProps m))
+                 (:shouldComponentUpdate m)
+                 (q/set-prop! -shouldComponentUpdate (:shouldComponentUpdate m))
+                 (:componentWillUpdate m)
+                 (q/set-prop! -componentWillUpdate (:componentWillUpdate m))
+                 (:compoentDidUpdate m)
+                 (q/set-prop! -componentDidUpdate (:compoentDidUpdate m))
+                 (:componentWillUnmount m)
+                 (q/set-prop! -componentWillUnmount (:componentWillUnmount m)))
+        react-component (.createClass js/React react-map)]
     (fn [value & static-args]
       (react-component #js {:value value :statics static-args}))))
 

@@ -17,3 +17,5 @@
     `(def ~name ~docstr (quiescent/component (fn ~argvec ~@body)))))
 
 
+(defmacro set-prop! [o propname fn]
+  `(let [newo# ~o] (set! (. newo# ~propname) ~fn) newo#))

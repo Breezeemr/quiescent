@@ -13,9 +13,10 @@
   (let [has-docstr? (string? (first forms))
         docstr (if has-docstr? (first forms) "")
         argvec (if has-docstr? (second forms) (first forms))
-        body (if has-docstr? (drop 2 forms) (drop 1 forms))]
-    `(def ~name ~docstr (quiescent/component (fn ~argvec ~@body)))))
-
+        body (if has-docstr? (drop 2 forms) (drop 1 forms))
+        m (meta name)]
+    `(def ~name ~docstr (quiescent/component
+                          (with-meta (fn ~argvec ~@body) ~m)))))
 
 (defmacro set-prop! [o propname fn]
   `(let [newo# ~o] (set! (. newo# ~propname) ~fn) newo#))

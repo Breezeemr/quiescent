@@ -33,51 +33,6 @@
     (fn [value & static-args]
       (react-component #js {:value value :statics static-args}))))
 
-(def WrapperComponent
-  "Wrapper component used to mix-in lifecycle access"
-  (.createClass js/React
-     #js {:render
-          (fn [] (this-as this (aget (.-props this) "wrappee")))
-          :componentDidUpdate
-          (fn [prev-props prev-state node]
-            (this-as this
-              (when-let [f (aget (.-props this) "onUpdate")]
-                (binding [*component* this]
-                  (f node)))))
-          :componentDidMount
-          (fn [node]
-            (this-as this
-              (when-let [f (aget (.-props this) "onMount")]
-                       (f node))))}))
-
-(defn on-update
-  "Wrap a component, specifying a function to be called on the
-  componentDidUpdate lifecycle event.
-
-  The function will be passed the rendered DOM node."
-  [child f]
-  (WrapperComponent #js {:wrappee child
-                         :onUpdate f}))
-
-(defn on-initial-render
-  "Wrap a component, specifying a function to be called on the
-  componentDidMount lifecycle event.
-
-  The function will be passed the rendered DOM node."
-  [child f]
-  (WrapperComponent #js {:wrappee child
-                         :onMount f}))
-
-(defn on-render
-  "Wrap a component, specifying a function to be called on the
-  componentDidMount AND the componentDidUpdate lifecycle events.
-
-  The function will be passed the rendered DOM node."
-  [child f]
-  (WrapperComponent #js {:wrappee child
-                         :onUpdate f
-                         :onMount f}))
-
 (defn render
   "Given a ReactJS component, immediately render it, rooted to the
   specified DOM node."

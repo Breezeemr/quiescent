@@ -41,8 +41,8 @@
                  (q/set-prop! -shouldComponentUpdate (:shouldComponentUpdate m))
                  (:componentWillUpdate m)
                  (q/set-prop! -componentWillUpdate (:componentWillUpdate m))
-                 (:compoentDidUpdate m)
-                 (q/set-prop! -componentDidUpdate (:compoentDidUpdate m))
+                 (:componentDidUpdate m)
+                 (q/set-prop! -componentDidUpdate (:componentDidUpdate m))
                  (:componentWillUnmount m)
                  (q/set-prop! -componentWillUnmount (:componentWillUnmount m)))
         react-component (.createClass js/React react-map)]

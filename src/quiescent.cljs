@@ -31,6 +31,9 @@
                                     (apply renderer
                                            (aget (.-props this) "value")
                                            (aget (.-props this) "statics")))))}
+                 (or (:displayName m) (not-empty (.-name renderer)))
+                 (q/set-prop! -displayName (or (:displayName m)
+                                               (not-empty (.-name renderer))))
                  (:componentWillMount m)
                  (q/set-prop! -componentWillMount (:componentWillMount m))
                  (:componentDidMount m)

@@ -73,7 +73,7 @@
             (this-as this
               (when-let [f (aget (.-props this) "onMount")]
                 (binding [*component* this]
-                  (f node)))))
+                  (f (.getDOMNode this))))))
           :componentWillMount
           (fn []
             (this-as this

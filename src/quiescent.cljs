@@ -80,12 +80,20 @@
               (when-let [f (aget (.-props this) "onWillMount")]
                 (binding [*component* this]
                   (f)))))
+          :componentWillUpdate
+          (fn [_ _]
+            (this-as this
+              (when-let [f (aget (.-props this) "onWillUpdate")]
+                (binding [*component* this]
+                  (f)))))
           :componentWillUnmount
           (fn []
             (this-as this
               (when-let [f (aget (.-props this) "onWillUnmount")]
                 (binding [*component* this]
                   (f)))))}))
+
+
 
 (defn on-update
   "Wrap a component, specifying a function to be called on the
@@ -112,8 +120,9 @@
   The function will be passed the rendered DOM node."
   [child f]
   (WrapperComponent #js {:wrappee child
-                         :onUpdate f
-                         :onMount f}))
+                         :onMount f
+                         :onUpdate f}))
+
 
 (defn on-will-mount
   "Wrap a component, specifying a function to be called on the
@@ -124,6 +133,26 @@
   (WrapperComponent #js {:wrappee child
                          :onWillMount f}))
 
+(defn on-will-update
+  "Wrap a component, specifying a function to be called on the
+  componentWillUpdate lifecycle event.
+
+  The function will be called with no arguments."
+  [child f]
+  (WrapperComponent #js {:wrappee child
+                         :onWillUpdate f}))
+
+(defn on-will-render
+  "Wrap a component, specifying a function to be called on the
+  componentWillMount AND the componentWillUpdate lifecycle events.
+
+  The function will be called with no arguments."
+  [child f]
+  (WrapperComponent #js {:wrappee child
+                         :onWillMount f
+                         :onWillUpdate f}))
+
+
 (defn on-will-unmount
   "Wrap a component, specifying a function to be called on the
   componentWillUnmount lifecycle event.
@@ -132,6 +161,7 @@
   [child f]
   (WrapperComponent #js {:wrappee child
                          :onWillUnmount f}))
+
 
 (defn render
   "Given a ReactJS component, immediately render it, rooted to the

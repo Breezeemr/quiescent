@@ -48,9 +48,14 @@
                  (q/set-prop! -componentDidUpdate (:componentDidUpdate m))
                  (:componentWillUnmount m)
                  (q/set-prop! -componentWillUnmount (:componentWillUnmount m)))
-        react-component (.createClass js/React react-map)]
-    (fn [value & static-args]
-      (react-component #js {:value value :statics static-args}))))
+        react-component (.createClass js/React react-map)
+        q-wrapper (fn [value & static-args]
+                    (react-component #js {:value value :statics static-args}))]
+    (when-let [displayName (.-displayName react-map)]
+      (set! (.-displayName q-wrapper) displayName))
+    (when-let [example (:exampleValue m)]
+      (set! (.-exampleArg q-wrapper) example))
+    q-wrapper))
 
 (def WrapperComponent
   "Wrapper component used to mix-in lifecycle access"

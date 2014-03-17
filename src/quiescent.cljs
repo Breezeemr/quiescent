@@ -53,7 +53,7 @@
                     (react-component #js {:value value :statics static-args}))]
     (when-let [displayName (.-displayName react-map)]
       (set! (.-displayName q-wrapper) displayName))
-    (when-let [example (:exampleValue m)]
+    (when-let [example (:exampleArg m)]
       (set! (.-exampleArg q-wrapper) example))
     q-wrapper))
 

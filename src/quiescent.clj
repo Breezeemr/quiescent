@@ -14,7 +14,8 @@
         argvec (if has-docstr? (second forms) (first forms))
         body (if has-docstr? (drop 2 forms) (drop 1 forms))
         m (meta name)
-        m (if (contains? m :displayName) m (assoc m :displayName (str name)))]
+        m (if (contains? m :displayName) m (assoc m :displayName (str name)))
+        m (if has-docstr? (assoc m :doc docstr) m)]
     `(def ~name ~docstr (quiescent/component
                           (with-meta (fn ~argvec ~@body) ~m)))))
 

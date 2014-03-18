@@ -55,6 +55,8 @@
       (set! (.-displayName q-wrapper) displayName))
     (when-let [example (:exampleArg m)]
       (set! (.-exampleArg q-wrapper) example))
+    (when-let [doc (:doc m)]
+      (set! (.-doc q-wrapper) doc))
     q-wrapper))
 
 (defn render

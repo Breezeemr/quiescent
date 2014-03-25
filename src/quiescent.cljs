@@ -57,6 +57,8 @@
       (set! (.-exampleArg q-wrapper) example))
     (when-let [doc (:doc m)]
       (set! (.-doc q-wrapper) doc))
+    (when-let [wrapper (:exampleContext m)]
+      (set! (.-exampleContext q-wrapper) wrapper))
     q-wrapper))
 
 (defn render

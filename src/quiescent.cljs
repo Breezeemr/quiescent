@@ -83,3 +83,8 @@
   "Set the \"value\" key of a component's state."
   [component value]
   (.setState component #js {:value value}))
+
+(defn get-state
+  "Get the \"value\" key of a component's state."
+  ([] (get-state *component*))
+  ([component] (aget (.-state component) "value")))

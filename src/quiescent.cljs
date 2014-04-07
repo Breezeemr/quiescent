@@ -69,3 +69,8 @@
   specified DOM node."
   [component node]
   (.renderComponent js/React component node))
+
+(defn set-state
+  "Set the \"value\" key of a component's state."
+  [component value]
+  (.setState component #js {:value value}))

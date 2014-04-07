@@ -18,6 +18,7 @@
   component should re-render."
   [renderer]
   (let [m (meta renderer)
+       get-initial-state (:getInitialState m)
          react-map
          (cond-> #js {:shouldComponentUpdate
                        (fn [next-props next-state]
@@ -37,6 +38,14 @@
                  (or (:displayName m) (not-empty (.-name renderer)))
                  (q/set-prop! -displayName (or (:displayName m)
                                                (not-empty (.-name renderer))))
+                 (:getInitialState m)
+                 (q/set-prop! -getInitialState
+                              (fn []
+                                (this-as this
+                                         (binding [*component* this]
+                                           #js {:value (get-initial-state)}))))
+                 (:getDefaultProps m)
+                 (q/set-prop! -getDefaultProps (:getDefaultProps m))
                  (:componentWillMount m)
                  (q/set-prop! -componentWillMount (:componentWillMount m))
                  (:componentDidMount m)

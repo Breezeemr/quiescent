@@ -20,10 +20,13 @@
   (let [m (meta renderer)
          react-map
          (cond-> #js {:shouldComponentUpdate
-                       (fn [next-props _]
+                       (fn [next-props next-state]
                          (this-as this
-                                  (not= (aget (.-props this) "value")
-                                        (aget next-props "value"))))
+                                  (or
+                                    (not= (aget (.-props this) "value")
+                                          (aget next-props "value"))
+                                    (not= (aget (.-state this) "value")
+                                          (aget next-state "value")))))
                       :render
                        (fn []
                          (this-as this

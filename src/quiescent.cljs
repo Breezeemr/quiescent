@@ -26,8 +26,10 @@
                                   (or
                                     (not= (aget (.-props this) "value")
                                           (aget next-props "value"))
-                                    (not= (aget (.-state this) "value")
-                                          (aget next-state "value")))))
+                                    (let [this-state (or (.-state this) (js-obj))
+                                          next-state (or next-state (js-obj))]
+                                      (not= (aget this-state "value")
+                                            (aget next-state "value"))))))
                       :render
                        (fn []
                          (this-as this

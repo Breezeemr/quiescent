@@ -64,7 +64,12 @@
                  (q/set-prop! -componentWillUnmount (:componentWillUnmount m)))
         react-component (.createClass js/React react-map)
         q-wrapper (fn [value & static-args]
-                    (react-component #js {:value value :statics static-args}))]
+                    (let [props #js {:value value :statics static-args}]
+                      (when-let [key (get (first static-args) :react/key)]
+                        (aset props "key" key))
+                      (when-let [ref (get (first static-args) :react/ref)]
+                        (aset props "ref" ref))
+                      (react-component props)))]
     (when-let [displayName (.-displayName react-map)]
       (set! (.-displayName q-wrapper) displayName))
     (when-let [example (:exampleArg m)]

@@ -1,5 +1,6 @@
 (ns quiescent
-  [:require-macros [quiescent :as q]])
+  (:require-macros [quiescent :as q]
+                   [om.core :as om]))
 
 (def ^:dynamic *component*
   "Within a component render function, will be bound to the raw
@@ -22,46 +23,49 @@
          react-map
          (cond-> #js {:shouldComponentUpdate
                        (fn [next-props next-state]
-                         (this-as this
-                                  (or
-                                    (not= (aget (.-props this) "value")
-                                          (aget next-props "value"))
-                                    (let [this-state (or (.-state this) (js-obj))
-                                          next-state (or next-state (js-obj))]
-                                      (not= (aget this-state "value")
-                                            (aget next-state "value"))))))
+                         (om/allow-reads
+                           (this-as this
+                                    (or
+                                      (not= (aget (.-props this) "value")
+                                            (aget next-props "value"))
+                                      (let [this-state (or (.-state this) (js-obj))
+                                            next-state (or next-state (js-obj))]
+                                        (not= (aget this-state "value")
+                                              (aget next-state "value")))))))
                       :render
                        (fn []
-                         (this-as this
-                                  (binding [*component* this]
-                                    (apply renderer
-                                           (aget (.-props this) "value")
-                                           (aget (.-props this) "statics")))))}
+                         (om/allow-reads
+                           (this-as this
+                                    (binding [*component* this]
+                                      (apply renderer
+                                             (aget (.-props this) "value")
+                                             (aget (.-props this) "statics"))))))}
                  (or (:displayName m) (not-empty (.-name renderer)))
                  (q/set-prop! -displayName (or (:displayName m)
                                                (not-empty (.-name renderer))))
                  (:getInitialState m)
                  (q/set-prop! -getInitialState
                               (fn []
-                                (this-as this
-                                         (binding [*component* this]
-                                           #js {:value (get-initial-state)}))))
+                                (om/allow-reads
+                                  (this-as this
+                                           (binding [*component* this]
+                                             #js {:value (get-initial-state)})))))
                  (:getDefaultProps m)
-                 (q/set-prop! -getDefaultProps (:getDefaultProps m))
+                 (q/set-prop! -getDefaultProps (fn [] (.apply (:getDefaultProps m) (js-this) (js-arguments))))
                  (:componentWillMount m)
-                 (q/set-prop! -componentWillMount (:componentWillMount m))
+                 (q/set-prop! -componentWillMount (fn [] (.apply (:componentWillMount m) (js-this) (js-arguments))))
                  (:componentDidMount m)
-                 (q/set-prop! -componentDidMount (:componentDidMount m))
+                 (q/set-prop! -componentDidMount (fn [] (.apply (:componentDidMount m) (js-this) (js-arguments))))
                  (:componentWillReceiveProps m)
-                 (q/set-prop! -componentWillReceiveProps (:componentWillReceiveProps m))
+                 (q/set-prop! -componentWillReceiveProps (fn [] (.apply (:componentWillReceiveProps m) (js-this) (js-arguments))))
                  (:shouldComponentUpdate m)
-                 (q/set-prop! -shouldComponentUpdate (:shouldComponentUpdate m))
+                 (q/set-prop! -shouldComponentUpdate (fn [] (.apply (:shouldComponentUpdate m) (js-this) (js-arguments))))
                  (:componentWillUpdate m)
-                 (q/set-prop! -componentWillUpdate (:componentWillUpdate m))
+                 (q/set-prop! -componentWillUpdate (fn [] (.apply (:componentWillUpdate m) (js-this) (js-arguments))))
                  (:componentDidUpdate m)
-                 (q/set-prop! -componentDidUpdate (:componentDidUpdate m))
+                 (q/set-prop! -componentDidUpdate (fn [] (.apply (:componentDidUpdate m) (js-this) (js-arguments))))
                  (:componentWillUnmount m)
-                 (q/set-prop! -componentWillUnmount (:componentWillUnmount m)))
+                 (q/set-prop! -componentWillUnmount (fn [] (.apply (:componentWillUnmount m) (js-this) (js-arguments)))))
         react-component (.createClass js/React react-map)
         q-wrapper (fn [value & static-args]
                     (let [props #js {:value value :statics static-args}]

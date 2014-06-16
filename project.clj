@@ -4,7 +4,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [org.clojure/clojurescript "0.0-2173" :scope "provided"]
-                 [com.facebook/react "0.9.0.2"]]
+                 [org.clojars.narma/react "0.10.0"]]
   :source-paths ["src"]
 
   ;; development concerns

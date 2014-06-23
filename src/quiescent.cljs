@@ -99,3 +99,12 @@
   "Get the \"value\" key of a component's state."
   ([] (get-state *component*))
   ([component] (aget (.-state component) "value")))
+
+(defn swap-state
+  "Set the \"value\" key of a component's state."
+  [component tx-fn]
+  (let [old-state (get-state component)
+        new-state (tx-fn old-state)]
+    (when (not= old-state new-state)
+      (set-state component new-state))))
+

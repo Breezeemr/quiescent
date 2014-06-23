@@ -101,10 +101,16 @@
   ([component] (aget (.-state component) "value")))
 
 (defn swap-state
-  "Set the \"value\" key of a component's state."
-  [component tx-fn]
-  (let [old-state (get-state component)
-        new-state (tx-fn old-state)]
-    (when (not= old-state new-state)
-      (set-state component new-state))))
-
+  "Swap the \"value\" key of a component's state."
+  ([tx-fn] (swap-state *component* tx-fn))
+  ([component tx-fn]
+   (let [old-state (get-state component)
+         new-state (tx-fn old-state)]
+     (when (not= old-state new-state)
+       (set-state component new-state))))
+  )
+(defn get-props
+  "Get the render args from a component's props."
+  ([] (get-props *component*))
+  ([component] [(aget (.-props component) "value")
+                (aget (.-props component) "statics")]))

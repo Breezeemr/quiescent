@@ -8,6 +8,15 @@
                  [org.clojure/clojurescript "0.0-2173" :scope "provided"]
                  [com.facebook/react-raf "0.10.0"]]
   :source-paths ["src"]
+  :release-tasks [["vcs" "assert-committed"]
+                  ["change" "version"
+                   "leiningen.release/bump-version" "release"]
+                  ["vcs" "commit"]
+                  ["vcs" "tag"]
+                  ["deploy" "releases"]
+                  ["change" "version" "leiningen.release/bump-version"]
+                  ["vcs" "commit"]
+                  ["vcs" "push"]]
 
   ;; development concerns
   :profiles {:dev {:source-paths ["src" "examples/src"]

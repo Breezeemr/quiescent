@@ -25,13 +25,14 @@
                        (fn [next-props next-state]
                          (om/allow-reads
                            (this-as this
-                                    (or
-                                      (not= (aget (.-props this) "value")
-                                            (aget next-props "value"))
-                                      (let [this-state (or (.-state this) (js-obj))
-                                            next-state (or next-state (js-obj))]
-                                        (not= (aget this-state "value")
-                                              (aget next-state "value")))))))
+                                    (binding [*component* this]
+                                      (or
+                                        (not= (aget (.-props this) "value")
+                                              (aget next-props "value"))
+                                        (let [this-state (or (.-state this) (js-obj))
+                                              next-state (or next-state (js-obj))]
+                                          (not= (aget this-state "value")
+                                                (aget next-state "value"))))))))
                       :render
                        (fn []
                          (om/allow-reads

@@ -1,10 +1,35 @@
 (ns quiescent
-  (:require-macros [quiescent :as q]
+  (:require-macros [quiescent :as q :refer [wrapped-lifecycle-method]]
                    [om.core :as om]))
 
 (def ^:dynamic *component*
   "Within a component render function, will be bound to the raw
   ReactJS component." nil)
+
+(def ^:private no-this-state (js-obj))
+(def ^:private no-next-state (js-obj))
+
+(defn- default-shouldComponentUpdate [next-props next-state]
+  (or (not= (aget (.-props *component*) "value") (aget next-props "value"))
+    (let [this-state (if (nil? (.-state *component*))
+                       no-this-state
+                       (.-state *component*))
+          next-state (if (nil? next-state)
+                       no-next-state
+                       next-state)]
+      (not= (aget this-state "value") (aget next-state "value")))))
+
+(defn- assemble-props [value [fsa & rsa :as static-args]]
+  (let [props #js {:value value :statics static-args}]
+    (when-some [key (get fsa :react/key)]
+      (aset props "key" key))
+    (when-some [ref (get fsa :react/ref)]
+      (aset props "ref" ref))
+    (when-not (and (undefined? (aget props "key"))
+                (undefined? (aget props "ref")))
+      (aset props "statics"
+        (conj rsa (dissoc fsa :react/key :react/ref))))
+    props))
 
 (defn component
   "Return a function that will return a ReactJS component, using the
@@ -19,75 +44,54 @@
   component should re-render."
   [renderer]
   (let [m (meta renderer)
-       get-initial-state (:getInitialState m)
-         react-map
-         (cond-> #js {:shouldComponentUpdate
-                       (fn [next-props next-state]
-                         (om/allow-reads
-                           (this-as this
-                                    (binding [*component* this]
-                                      (or
-                                        (not= (aget (.-props this) "value")
-                                              (aget next-props "value"))
-                                        (let [this-state (or (.-state this) (js-obj))
-                                              next-state (or next-state (js-obj))]
-                                          (not= (aget this-state "value")
-                                                (aget next-state "value"))))))))
-                      :render
-                       (fn []
-                         (om/allow-reads
-                           (this-as this
-                                    (binding [*component* this]
-                                      (apply renderer
-                                             (aget (.-props this) "value")
-                                             (aget (.-props this) "statics"))))))}
-                 (or (:displayName m) (not-empty (.-name renderer)))
-                 (q/set-prop! -displayName (or (:displayName m)
-                                               (not-empty (.-name renderer))))
-                 (:getInitialState m)
-                 (q/set-prop! -getInitialState
-                              (fn []
-                                (om/allow-reads
-                                  (this-as this
-                                           (binding [*component* this]
-                                             #js {:value (get-initial-state)})))))
-                 (:getDefaultProps m)
-                 (q/set-prop! -getDefaultProps (fn [] (om/allow-reads (.apply (:getDefaultProps m) (js-this) (js-arguments)))))
-                 (:componentWillMount m)
-                 (q/set-prop! -componentWillMount (fn [] (om/allow-reads (.apply (:componentWillMount m) (js-this) (js-arguments)))))
-                 (:componentDidMount m)
-                 (q/set-prop! -componentDidMount (fn [] (om/allow-reads (.apply (:componentDidMount m) (js-this) (js-arguments)))))
-                 (:componentWillReceiveProps m)
-                 (q/set-prop! -componentWillReceiveProps (fn [] (om/allow-reads (.apply (:componentWillReceiveProps m) (js-this) (js-arguments)))))
-                 (:shouldComponentUpdate m)
-                 (q/set-prop! -shouldComponentUpdate (fn [] (om/allow-reads (.apply (:shouldComponentUpdate m) (js-this) (js-arguments)))))
-                 (:componentWillUpdate m)
-                 (q/set-prop! -componentWillUpdate (fn [] (om/allow-reads (.apply (:componentWillUpdate m) (js-this) (js-arguments)))))
-                 (:componentDidUpdate m)
-                 (q/set-prop! -componentDidUpdate (fn [] (om/allow-reads (.apply (:componentDidUpdate m) (js-this) (js-arguments)))))
-                 (:componentWillUnmount m)
-                 (q/set-prop! -componentWillUnmount (fn [] (om/allow-reads (.apply (:componentWillUnmount m) (js-this) (js-arguments))))))
-        react-component (.createClass js/React react-map)
-        q-wrapper (fn [value & [fsa & rsa :as static-args]]
-                    (let [props #js {:value value :statics static-args}]
-                      (when-let [key (get fsa :react/key)]
-                        (aset props "key" key))
-                      (when-let [ref (get fsa :react/ref)]
-                        (aset props "ref" ref))
-                      (when-not (and (undefined? (aget props "key"))
-                                     (undefined? (aget props "ref")))
-                        (aset props "statics"
-                              (into [(dissoc fsa :react/key :react/ref)] rsa)))
-                      (react-component props)))]
-    (when-let [displayName (.-displayName react-map)]
-      (set! (.-displayName q-wrapper) displayName))
-    (when-let [example (:exampleArg m)]
-      (set! (.-exampleArg q-wrapper) example))
-    (when-let [doc (:doc m)]
-      (set! (.-doc q-wrapper) doc))
-    (when-let [wrapper (:exampleContext m)]
-      (set! (.-exampleContext q-wrapper) wrapper))
-    q-wrapper))
+        react-map #js {:shouldComponentUpdate (wrapped-lifecycle-method
+                                                (default-shouldComponentUpdate
+                                                  (aget args 0) (aget args 1)))
+                       :render                (wrapped-lifecycle-method
+                                                (apply renderer
+                                                   (aget (. *component* -props) "value")
+                                                   (aget (. *component* -props) "statics")))}]
+    (when-some [n (or (:displayName m) (not-empty (.-name renderer)))]
+      (set! (.-displayName react-map) n))
+    (when-some [f (:getInitialState m)]
+      (set! (.-getInitialState react-map)
+        (wrapped-lifecycle-method #js {:value (f)})))
+    (when-some [f (:getDefaultProps m)]
+      (set! (.-getDefaultProps react-map)
+        (wrapped-lifecycle-method (. f apply *component* args))))
+    (when-some [f (:componentWillMount m)]
+      (set! (.-componentWillMount react-map)
+        (wrapped-lifecycle-method (. f apply *component* args))))
+    (when-some [f (:componentDidMount m)]
+      (set! (.-componentDidMount react-map)
+        (wrapped-lifecycle-method (. f apply *component* args))))
+    (when-some [f (:componentWillReceiveProps m)]
+      (set! (.-componentWillReceiveProps react-map)
+        (wrapped-lifecycle-method (. f apply *component* args))))
+    (when-some [f (:shouldComponentUpdate m)]
+      (set! (.-shouldComponentUpdate react-map)
+        (wrapped-lifecycle-method (. f apply *component* args))))
+    (when-some [f (:componentWillUpdate m)]
+      (set! (.-componentWillUpdate react-map)
+        (wrapped-lifecycle-method (. f apply *component* args))))
+    (when-some [f (:componentDidUpdate m)]
+      (set! (.-componentDidUpdate react-map)
+        (wrapped-lifecycle-method (. f apply *component* args))))
+    (when-some [f (:componentWillUnmount m)]
+      (set! (.-componentWillUnmount react-map)
+        (wrapped-lifecycle-method (. f apply *component* args))))
+    (let [react-component (.createClass js/React react-map)
+          q-wrapper (fn [value & statics]
+                      (react-component (assemble-props value statics)))]
+      (when-some [displayName (.-displayName react-map)]
+        (set! (.-displayName q-wrapper) displayName))
+      (when-some [example (:exampleArg m)]
+        (set! (.-exampleArg q-wrapper) example))
+      (when-some [doc (:doc m)]
+        (set! (.-doc q-wrapper) doc))
+      (when-some [wrapper (:exampleContext m)]
+        (set! (.-exampleContext q-wrapper) wrapper))
+      q-wrapper)))
 
 (defn render
   "Given a ReactJS component, immediately render it, rooted to the
@@ -97,8 +101,9 @@
 
 (defn set-state
   "Set the \"value\" key of a component's state."
-  [component value]
-  (.setState component #js {:value value}))
+  ([value] (set-state *component* value))
+  ([component value]
+    (.setState component #js {:value value})))
 
 (defn get-state
   "Get the \"value\" key of a component's state."

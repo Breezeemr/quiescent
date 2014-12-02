@@ -19,9 +19,15 @@
     `(def ~name ~docstr (quiescent/component
                           (with-meta (fn ~argvec ~@body) ~m)))))
 
-(defmacro set-prop! [o propname fn]
-  `(let [newo# ~o] (set! (. newo# ~propname) ~fn) newo#))
-
+(defmacro wrapped-lifecycle-method
+  "A very unsafe not-hygenic macro."
+  [& body]
+  `(fn []
+     (let [~'this (cljs.core/js-this)
+           ~'args (cljs.core/js-arguments)]
+       (binding [om.core/*read-enabled* true                ;; NOTE: This is only to avoid pain. It is not used correctly, but do not change!
+                 quiescent/*component* ~'this]
+         ~@body))))
 
 (defmacro createMixin [& proto+specs]
   ;; TODO: Combine different signatures.

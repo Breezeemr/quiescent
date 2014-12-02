@@ -4,8 +4,8 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :repositories [["snapshots" {:url "s3p://breezepackages/snapshots" :creds :gpg}]
                  ["releases" {:url "s3p://breezepackages/releases" :creds :gpg}]]
-  :dependencies [[org.clojure/clojure "1.5.1"]
-                 [org.clojure/clojurescript "0.0-2173" :scope "provided"]
+  :dependencies [[org.clojure/clojure "1.6.0"]
+                 [org.clojure/clojurescript "0.0-2342" :scope "provided"]
                  [com.facebook/react-raf "0.10.0"]]
   :source-paths ["src"]
   :release-tasks [["vcs" "assert-committed"]

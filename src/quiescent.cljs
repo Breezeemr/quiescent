@@ -82,9 +82,9 @@
         (wrapped-lifecycle-method (. f apply *component* args))))
     (let [react-component (.createClass js/React react-map)
           q-wrapper (fn [value & statics]
-                      (.createElement js/React react-component (assemble-props value statics)))
-          (when-some [displayName (.-displayName react-map)]
-            (set! (.-displayName q-wrapper) displayName))]
+                      (.createElement js/React react-component (assemble-props value statics)))]
+      (when-some [displayName (.-displayName react-map)]
+        (set! (.-displayName q-wrapper) displayName))
       (when-some [example (:exampleArg m)]
         (set! (.-exampleArg q-wrapper) example))
       (when-some [doc (:doc m)]

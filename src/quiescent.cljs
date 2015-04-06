@@ -97,7 +97,7 @@
   "Given a ReactJS component, immediately render it, rooted to the
   specified DOM node."
   [component node]
-  (.renderComponent js/React component node))
+  (.render js/React component node))
 
 (defn set-state
   "Set the \"value\" key of a component's state."

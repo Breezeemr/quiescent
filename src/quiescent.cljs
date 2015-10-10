@@ -114,11 +114,15 @@
   "Swap the \"value\" key of a component's state."
   ([tx-fn] (swap-state *component* tx-fn))
   ([component tx-fn]
-   (let [old-state (get-state component)
-         new-state (tx-fn old-state)]
-     (when (not= old-state new-state)
-       (set-state component new-state))))
-  )
+    ;; TODO: setstate callback fn
+    ;; TODO: swap-state tx-fn accepts old-props as second arg?
+   (.setState component (fn [s _]
+                          (let [old-state (aget s "value")
+                                new-state (tx-fn old-state)]
+                            (if (= old-state new-state)
+                              #js{}
+                              #js{:value new-state}))))))
+
 (defn get-props
   "Get the render args from a component's props."
   ([] (get-props *component*))

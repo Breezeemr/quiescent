@@ -1,7 +1,6 @@
 (ns quiescent
   (:require cljsjs.react)
-  (:require-macros [quiescent :as q :refer [wrapped-lifecycle-method]]
-                   [om.core :as om]))
+  (:require-macros [quiescent :as q :refer [wrapped-lifecycle-method]]))
 
 (def ^:dynamic *component*
   "Within a component render function, will be bound to the raw

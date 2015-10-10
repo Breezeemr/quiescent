@@ -25,8 +25,7 @@
   `(fn []
      (let [~'this (cljs.core/js-this)
            ~'args (cljs.core/js-arguments)]
-       (binding [om.core/*read-enabled* true                ;; NOTE: This is only to avoid pain. It is not used correctly, but do not change!
-                 quiescent/*component* ~'this]
+       (binding [quiescent/*component* ~'this]
          ~@body))))
 
 (defmacro createMixin [& proto+specs]

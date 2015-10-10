@@ -1,4 +1,5 @@
 (ns quiescent
+  (:require cljsjs.react)
   (:require-macros [quiescent :as q :refer [wrapped-lifecycle-method]]
                    [om.core :as om]))
 

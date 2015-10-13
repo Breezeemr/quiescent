@@ -1,5 +1,5 @@
 (ns quiescent.dom
-  (:refer-clojure :exclude [map meta time])
+  (:refer-clojure :exclude [map mask meta time])
   (:require-macros [quiescent.dom :as dm])
   (:require cljsjs.react
             [goog.object :as gobj]))
@@ -21,4 +21,4 @@
 
     :else obj))
 
-#_(dm/define-tag-functions)
+(dm/define-tag-functions)

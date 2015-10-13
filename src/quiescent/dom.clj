@@ -6,20 +6,15 @@
 (defn- tag-fn*
   "Return a form to defining a wrapper function for a base ReactDOM Element."
   [tag]
-  (let [f (with-meta
-            (symbol "js" (str "React.DOM." (name tag)))
-            {:tag 'object})]
+  (let [f (symbol "js" (str "React.DOM." (name tag)))]
     `(defn ~tag
        ~(str "Return a `" (name tag) "` ReactElement.")
-       {:tag 'not-native}
        ([]
          (~f nil))
        ([~'attrs]
          (~f (quiescent.dom/js-props ~'attrs)))
        ([~'attrs ~'c]
          (~f (quiescent.dom/js-props ~'attrs) ~'c))
-       ([~'attrs ~'c1 ~'c2]
-         (~f (quiescent.dom/js-props ~'attrs) ~'c1 ~'c2))
        ([~'attrs ~'c1 ~'c2]
          (~f (quiescent.dom/js-props ~'attrs) ~'c1 ~'c2))
        ([~'attrs ~'c1 ~'c2 ~'c3]

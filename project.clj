@@ -4,7 +4,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :repositories [["snapshots" {:url "s3p://breezepackages/snapshots" :creds :gpg}]
                  ["releases" {:url "s3p://breezepackages/releases" :creds :gpg}]]
-  :dependencies [[org.clojure/clojure "1.7.0"]
+  :dependencies [[org.clojure/clojure "1.7.0" :scope "provided"]
                  [org.clojure/clojurescript "1.7.122" :scope "provided"]
                  [cljsjs/react "0.13.3-1"]]
   :source-paths ["src"]
@@ -19,7 +19,10 @@
                   ["vcs" "push"]]
 
   ;; development concerns
-  :profiles {:dev {:source-paths ["src" "examples/src"]
+  :profiles {:dev {:dependencies
+                   [[org.clojure/clojure "1.7.0"]
+                    [org.clojure/clojurescript "1.7.122"]]
+                   :source-paths ["src" "examples/src"]
                    :resource-paths ["examples/resources"]
                    :plugins [[lein-cljsbuild "1.1.0"]]
                    :cljsbuild
@@ -29,8 +32,6 @@
                       {:output-to "examples/resources/public/main.js"
                        :output-dir "examples/resources/public/build"
                        :optimizations :whitespace
-                       ;:preamble ["react/react.min.js"]
-                       ;:externs ["react/externs/react.js"]
                        :pretty-print true
                        :source-map
                        "examples/resources/public/main.js.map"

@@ -22,3 +22,16 @@
     :else obj))
 
 (dm/define-tag-functions)
+
+(defn render
+  "`ReactDOM.render` wrapper"
+  ([element mountpoint] (js/React.render element mountpoint))
+  ([element mountpoint callback] (js/React.render element mountpoint callback)))
+
+(defn unmountComponentAtNode
+  "`ReactDOM.unmountComponentAtNode` wrapper"
+  [mountpoint] (js/React.unmountComponentAtNode mountpoint))
+
+(defn findDOMNode
+  "`ReactDOM.findDOMNode` wrapper"
+  [component] (js/React.findDOMNode component))

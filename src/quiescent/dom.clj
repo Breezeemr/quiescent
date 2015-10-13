@@ -79,3 +79,16 @@
   object."
   []
   `(do ~@(clojure.core/map tag-fn* ReactDOM-elements)))
+
+(defmacro render
+  "`ReactDOM.render` wrapper"
+  ([element mountpoint] `(js/React.render ~element ~mountpoint))
+  ([element mountpoint callback] `(js/React.render ~element ~mountpoint ~callback)))
+
+(defmacro unmountComponentAtNode
+  "`ReactDOM.unmountComponentAtNode` wrapper"
+  [mountpoint] `(js/React.unmountComponentAtNode ~mountpoint))
+
+(defmacro findDOMNode
+  "`ReactDOM.findDOMNode` wrapper"
+  [component] `(js/React.findDOMNode ~component))

@@ -93,12 +93,6 @@
         (set! (.-exampleContext q-wrapper) wrapper))
       q-wrapper)))
 
-(defn render
-  "Given a ReactJS component, immediately render it, rooted to the
-  specified DOM node."
-  [component node]
-  (.render js/React component node))
-
 (defn set-state
   "Set the \"value\" key of a component's state."
   ([value] (set-state *component* value))

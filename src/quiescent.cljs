@@ -6,8 +6,8 @@
   "Within a component render function, will be bound to the raw
   ReactJS component." nil)
 
-(def ^:private no-this-state (js-obj))
-(def ^:private no-next-state (js-obj))
+(def ^:private no-this-state #js{})
+(def ^:private no-next-state #js{})
 
 (defn- default-shouldComponentUpdate [next-props next-state]
   (or (not= (aget (.-props *component*) "value") (aget next-props "value"))

@@ -24,7 +24,7 @@
   [& body]
   `(fn []
      (let [~'this (cljs.core/js-this)
-           ~'args (cljs.core/js-arguments)]
+           ~'args (cljs.core/js-arguments)]                 ; Bound for the body!
        (binding [quiescent/*component* ~'this]
          ~@body))))
 
@@ -61,5 +61,3 @@
                 (cons (list 'displayName name) specs)
                 specs)]
     `(def ~name ~docstr (createClass ~@specs))))
-
-[]

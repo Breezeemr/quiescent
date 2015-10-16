@@ -5,8 +5,7 @@
   :repositories [["snapshots" {:url "s3p://breezepackages/snapshots" :creds :gpg}]
                  ["releases" {:url "s3p://breezepackages/releases" :creds :gpg}]]
   :dependencies [[org.clojure/clojure "1.7.0" :scope "provided"]
-                 [org.clojure/clojurescript "1.7.122" :scope "provided"]
-                 [cljsjs/react "0.14.0-0"]
+                 [org.clojure/clojurescript "1.7.145" :scope "provided"]
                  [cljsjs/react-dom "0.14.0-0"]]
   :source-paths ["src"]
   :release-tasks [["vcs" "assert-committed"]
@@ -22,7 +21,7 @@
   ;; development concerns
   :profiles {:dev {:dependencies
                    [[org.clojure/clojure "1.7.0"]
-                    [org.clojure/clojurescript "1.7.122"]]
+                    [org.clojure/clojurescript "1.7.145"]]
                    :source-paths ["src" "examples/src"]
                    :resource-paths ["examples/resources"]
                    :plugins [[lein-cljsbuild "1.1.0"]]

@@ -6,7 +6,7 @@
                  ["releases" {:url "s3p://breezepackages/releases" :creds :gpg}]]
   :dependencies [[org.clojure/clojure "1.7.0" :scope "provided"]
                  [org.clojure/clojurescript "1.7.145" :scope "provided"]
-                 [cljsjs/react-dom "0.14.0-0"]]
+                 [cljsjs/react-dom "0.14.0-1"]]
   :source-paths ["src"]
   :release-tasks [["vcs" "assert-committed"]
                   ["change" "version"

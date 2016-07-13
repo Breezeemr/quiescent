@@ -41,12 +41,11 @@
        ~@(for [[mname margs & mbody] obj-meths]
            `(set! (. ~o ~(symbol (str \- (name mname))))
                   (fn ~(subvec margs 1)
-                    (this-as
-                      ~(first margs)
+                    (cljs.core/this-as ~(first margs)
                       ~@mbody))))
        ~(if (empty? proto+specs)
           o
-          `(specify! ~o ~@proto+specs)))))
+          `(cljs.core/specify! ~o ~@proto+specs)))))
 
 (defmacro createClass [& specs]
   `(js/React.createClass (createMixin ~@specs)))

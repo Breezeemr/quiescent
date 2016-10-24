@@ -48,9 +48,11 @@
                                                 (default-shouldComponentUpdate
                                                   (aget args 0) (aget args 1)))
                        :render                (wrapped-lifecycle-method
-                                                (apply renderer
-                                                   (aget (. *component* -props) "value")
-                                                   (aget (. *component* -props) "statics")))}]
+                                                (apply (if-some [wrap-render (:wrap-render m)]
+                                                         (wrap-render renderer)
+                                                         renderer)
+                                                  (aget (. *component* -props) "value")
+                                                  (aget (. *component* -props) "statics")))}]
     (when-some [n (or (:displayName m) (not-empty (.-name renderer)))]
       (set! (.-displayName react-map) n))
     (when-some [f (:getInitialState m)]

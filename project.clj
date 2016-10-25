@@ -1,4 +1,4 @@
-(defproject breeze-quiescent "0.1.7-SNAPSHOT"
+(defproject breeze-quiescent "0.1.8-SNAPSHOT"
   :description "A minimal, functional ClojureScript wrapper for ReactJS"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}

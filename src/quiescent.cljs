@@ -124,3 +124,14 @@
   ([] (get-props *component*))
   ([component] [(aget (.-props component) "value")
                 (aget (.-props component) "statics")]))
+
+(defn element-props
+  "Get quescent props of an element."
+  [quiescent-react-element]
+  (aget (.-props quiescent-react-element) "value"))
+
+(defn clone-element
+  "Merge quiescent props into a quescient-react-element's props."
+  [quiescent-react-element quiescent-props]
+  (js/React.cloneElement quiescent-react-element
+    #js{:value (into (element-props quiescent-react-element) quiescent-props)}))

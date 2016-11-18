@@ -1,5 +1,6 @@
 (ns quiescent
-  (:require cljsjs.react)
+  (:require cljsjs.react
+            [goog.object :as gobj])
   (:require-macros [quiescent :as q :refer [wrapped-lifecycle-method]]))
 
 (def ^:dynamic *component*
@@ -131,7 +132,13 @@
   (aget (.-props quiescent-react-element) "value"))
 
 (defn clone-element
-  "Merge quiescent props into a quescient-react-element's props."
-  [quiescent-react-element quiescent-props]
-  (js/React.cloneElement quiescent-react-element
-    #js{:value (into (element-props quiescent-react-element) quiescent-props)}))
+  "Merge quiescent props into a quescient-react-element's props.
+  You may also include a normal react-props js object with top-level props."
+  ([quiescent-react-element quiescent-props]
+    (clone-element quiescent-react-element quiescent-props nil))
+  ([quiescent-react-element quiescent-props react-props]
+   (js/React.cloneElement quiescent-react-element
+     (doto (if (nil? react-props)
+             #js{}
+             (gobj/clone react-props))
+       (aset "value" quiescent-props)))))

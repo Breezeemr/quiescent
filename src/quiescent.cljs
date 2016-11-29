@@ -141,4 +141,5 @@
      (doto (if (nil? react-props)
              #js{}
              (gobj/clone react-props))
-       (aset "value" quiescent-props)))))
+       (aset "value" (into (element-props quiescent-react-element)
+                       quiescent-props))))))

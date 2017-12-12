@@ -6,31 +6,30 @@
 (defn- tag-fn*
   "Return a form to defining a wrapper function for a base ReactDOM Element."
   [tag]
-  (let [f (symbol "js" (str "React.DOM." (name tag)))]
-    `(defn ~tag
-       ~(str "Return a `" (name tag) "` ReactElement.")
-       ([]
-         (~f nil))
-       ([~'attrs]
-         (~f (quiescent.dom/js-props ~'attrs)))
-       ([~'attrs ~'c]
-         (~f (quiescent.dom/js-props ~'attrs) ~'c))
-       ([~'attrs ~'c1 ~'c2]
-         (~f (quiescent.dom/js-props ~'attrs) ~'c1 ~'c2))
-       ([~'attrs ~'c1 ~'c2 ~'c3]
-         (~f (quiescent.dom/js-props ~'attrs) ~'c1 ~'c2 ~'c3))
-       ([~'attrs ~'c1 ~'c2 ~'c3 ~'c4]
-         (~f (quiescent.dom/js-props ~'attrs) ~'c1 ~'c2 ~'c3 ~'c4))
-       ([~'attrs ~'c1 ~'c2 ~'c3 ~'c4 ~'c5 & ~'children]
-         (let [a# (cljs.core/make-array 6)]
-           (aset a# 0 (quiescent.dom/js-props ~'attrs))
-           (aset a# 1 ~'c1)
-           (aset a# 2 ~'c2)
-           (aset a# 3 ~'c3)
-           (aset a# 4 ~'c4)
-           (aset a# 5 ~'c5)
-           (reduce #(do (.push %1 %2) %1) a# ~'children)
-           (.apply ~f nil a#))))))
+  `(defn ~tag
+     ~(str "Return a `" (name tag) "` ReactElement.")
+     ([]
+       (react/createElement ~(name tag) nil))
+     ([~'attrs]
+       (react/createElement ~(name tag) (quiescent.dom/js-props ~'attrs)))
+     ([~'attrs ~'c]
+       (react/createElement ~(name tag) (quiescent.dom/js-props ~'attrs) ~'c))
+     ([~'attrs ~'c1 ~'c2]
+       (react/createElement ~(name tag) (quiescent.dom/js-props ~'attrs) ~'c1 ~'c2))
+     ([~'attrs ~'c1 ~'c2 ~'c3]
+       (react/createElement ~(name tag) (quiescent.dom/js-props ~'attrs) ~'c1 ~'c2 ~'c3))
+     ([~'attrs ~'c1 ~'c2 ~'c3 ~'c4]
+       (react/createElement ~(name tag) (quiescent.dom/js-props ~'attrs) ~'c1 ~'c2 ~'c3 ~'c4))
+     ([~'attrs ~'c1 ~'c2 ~'c3 ~'c4 ~'c5 & ~'children]
+       (let [a# (cljs.core/make-array 6)]
+         (aset a# 0 (quiescent.dom/js-props ~'attrs))
+         (aset a# 1 ~'c1)
+         (aset a# 2 ~'c2)
+         (aset a# 3 ~'c3)
+         (aset a# 4 ~'c4)
+         (aset a# 5 ~'c5)
+         (reduce #(do (.push %1 %2) %1) a# ~'children)
+         (.apply rdom/createElement ~(name tag) nil a#)))))
 
 (defn- tag-macro-fn+attrs* [fsym attrs]
   (list fsym
@@ -43,7 +42,7 @@
 (defmacro ^:private tag-macro*
   "Define a macro which calls a React.DOM factory."
   [tag]
-  (let [f (symbol "js" (str "React.DOM." (name tag)))]
+  (let [f (symbol "quiescent.dom" (name tag))]
     `(defmacro ~tag
        ~(str "Return a `" (name tag) "` ReactElement.")
        ([]
@@ -69,7 +68,7 @@
 (defmacro ^:private define-tag-macros []
   `(do ~@(clojure.core/map #(list 'tag-macro* %) ReactDOM-elements)))
 
-(define-tag-macros)
+#_(define-tag-macros)
 
 (defmacro define-tag-functions
   "Macro which expands to a do block which contains a defn for
@@ -80,15 +79,3 @@
   []
   `(do ~@(clojure.core/map tag-fn* ReactDOM-elements)))
 
-(defmacro render
-  "`ReactDOM.render` wrapper"
-  ([element mountpoint] `(js/ReactDOM.render ~element ~mountpoint))
-  ([element mountpoint callback] `(js/ReactDOM.render ~element ~mountpoint ~callback)))
-
-(defmacro unmountComponentAtNode
-  "`ReactDOM.unmountComponentAtNode` wrapper"
-  [mountpoint] `(js/ReactDOM.unmountComponentAtNode ~mountpoint))
-
-(defmacro findDOMNode
-  "`ReactDOM.findDOMNode` wrapper"
-  [component] `(js/ReactDOM.findDOMNode ~component))

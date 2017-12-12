@@ -1,8 +1,8 @@
 (ns quiescent.dom
   (:refer-clojure :exclude [map mask meta time])
   (:require-macros [quiescent.dom :as dm])
-  (:require cljsjs.react
-            cljsjs.react.dom
+  (:require [react]
+            ["react-dom" :as rdom :refer [unstable_batchedUpdates]]
             [goog.object :as gobj]))
 
 (defn js-props
@@ -26,20 +26,20 @@
 
 (defn render
   "`ReactDOM.render` wrapper"
-  ([element mountpoint] (js/ReactDOM.render element mountpoint))
-  ([element mountpoint callback] (js/ReactDOM.render element mountpoint callback)))
+  ([element mountpoint] (rdom/render element mountpoint))
+  ([element mountpoint callback] (rdom/render element mountpoint callback)))
 
 (defn unmountComponentAtNode
   "`ReactDOM.unmountComponentAtNode` wrapper"
-  [mountpoint] (js/ReactDOM.unmountComponentAtNode mountpoint))
+  [mountpoint] (rdom/unmountComponentAtNode mountpoint))
 
 (defn findDOMNode
   "`ReactDOM.findDOMNode` wrapper"
-  [component] (js/ReactDOM.findDOMNode component))
+  [component] (rdom/findDOMNode component))
 
 (def ^not-native batchedUpdates
   "The React batchUpdates addon. Takes one function which should call
   forceUpdate (possibly multiple times) inside it. This function will be called
   later and all components updated will have their forceUpdates reordered and
   applied in a single React transaction."
-  js/ReactDOM.unstable_batchedUpdates)
+  unstable_batchedUpdates)

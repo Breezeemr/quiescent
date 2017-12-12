@@ -1,5 +1,6 @@
 (ns quiescent
-  (:require cljsjs.react)
+  (:require [react :refer [createElement]]
+            ["create-react-class" :as createReactClass])
   (:require-macros [quiescent :as q :refer [wrapped-lifecycle-method]]))
 
 (def ^:dynamic *component*
@@ -8,6 +9,9 @@
 
 (def ^:private no-this-state #js{})
 (def ^:private no-next-state #js{})
+
+(defn create-rclass [m]
+  (createReactClass m))
 
 (defn- default-shouldComponentUpdate [next-props next-state]
   (or (not= (aget (.-props *component*) "value") (aget next-props "value"))
@@ -82,9 +86,9 @@
     (when-some [f (:componentWillUnmount m)]
       (set! (.-componentWillUnmount react-map)
         (wrapped-lifecycle-method (. f apply *component* args))))
-    (let [react-component (.createClass js/React react-map)
+    (let [react-component (createReactClass react-map)
           q-wrapper (fn [value & statics]
-                      (.createElement js/React react-component (assemble-props value statics)))]
+                      (createElement react-component (assemble-props value statics)))]
       (when-some [displayName (.-displayName react-map)]
         (set! (.-displayName q-wrapper) displayName))
       (when-some [example (:exampleArg m)]

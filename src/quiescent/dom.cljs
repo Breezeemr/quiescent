@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [map mask meta time])
   (:require-macros [quiescent.dom :as dm])
   (:require cljsjs.react
-            cljsjs.react.dom
+            cljsjs.react-dom
             [goog.object :as gobj]))
 
 (defn js-props

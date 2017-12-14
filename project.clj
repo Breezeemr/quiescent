@@ -1,4 +1,4 @@
-(defproject breeze-quiescent "0.1.8-SNAPSHOT"
+(defproject breeze-quiescent "0.1.8.1-SNAPSHOT"
   :description "A minimal, functional ClojureScript wrapper for ReactJS"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
@@ -6,7 +6,8 @@
                  ["releases" {:url "s3p://breezepackages/releases" :creds :gpg}]]
   :dependencies [[org.clojure/clojure "1.7.0" :scope "provided"]
                  [org.clojure/clojurescript "1.7.145" :scope "provided"]
-                 [cljsjs/react-dom "0.14.0-1"]]
+                 [cljsjs/react-dom "15.6.2-2"]
+                 [cljsjs/prop-types  "15.6.0-0"]]
   :source-paths ["src"]
   :release-tasks [["vcs" "assert-committed"]
                   ["change" "version"

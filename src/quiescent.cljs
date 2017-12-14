@@ -61,6 +61,12 @@
     (when-some [f (:getDefaultProps m)]
       (set! (.-getDefaultProps react-map)
         (wrapped-lifecycle-method (. f apply *component* args))))
+    (when-some [f (:getChildContext m)]
+      (set! (.-getChildContext react-map)
+        (wrapped-lifecycle-method (. f apply *component* args))))
+    (when-some [data (:childContextTypes m)]
+      (set! (.-childContextTypes react-map)
+        data))
     (when-some [f (:componentWillMount m)]
       (set! (.-componentWillMount react-map)
         (wrapped-lifecycle-method (. f apply *component* args))))

@@ -67,6 +67,9 @@
     (when-some [data (:childContextTypes m)]
       (set! (.-childContextTypes react-map)
         data))
+    (when-some [data (:contextTypes m)]
+      (set! (.-contextTypes react-map)
+        data))
     (when-some [f (:componentWillMount m)]
       (set! (.-componentWillMount react-map)
         (wrapped-lifecycle-method (. f apply *component* args))))

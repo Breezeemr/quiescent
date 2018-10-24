@@ -1,4 +1,4 @@
-(ns quiescent.dom
+(ns breeze.quiescent.dom
   (:refer-clojure :exclude [map meta time])
   (:require cljs.tagged-literals)
   (:import (cljs.tagged_literals JSValue)))

@@ -1,7 +1,7 @@
-(ns quiescent
+(ns breeze.quiescent
   (:require cljsjs.react
             [goog.object :as gobj])
-  (:require-macros [quiescent :as q :refer [wrapped-lifecycle-method]]))
+  (:require-macros [breeze.quiescent :as q :refer [wrapped-lifecycle-method]]))
 
 (def ^:dynamic *component*
   "Within a component render function, will be bound to the raw

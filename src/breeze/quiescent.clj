@@ -1,4 +1,4 @@
-(ns quiescent)
+(ns breeze.quiescent)
 
 (defmacro defcomponent
   "Creates a ReactJS component with the given name, an (optional)
@@ -16,7 +16,7 @@
         m (meta name)
         m (if (contains? m :displayName) m (assoc m :displayName (str name)))
         m (if has-docstr? (assoc m :doc docstr) m)]
-    `(def ~name ~docstr (quiescent/component
+    `(def ~name ~docstr (breeze.quiescent/component
                           (with-meta (fn ~argvec ~@body) ~m)))))
 
 (defmacro wrapped-lifecycle-method
@@ -25,7 +25,7 @@
   `(fn []
      (let [~'this (cljs.core/js-this)
            ~'args (cljs.core/js-arguments)]                 ; Bound for the body!
-       (binding [quiescent/*component* ~'this]
+       (binding [breeze.quiescent/*component* ~'this]
          ~@body))))
 
 (defmacro createMixin [& proto+specs]

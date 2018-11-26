@@ -12,18 +12,18 @@
        ([]
          (~f nil))
        ([~'attrs]
-         (~f (quiescent.dom/js-props ~'attrs)))
+         (~f (breeze.quiescent.dom/js-props ~'attrs)))
        ([~'attrs ~'c]
-         (~f (quiescent.dom/js-props ~'attrs) ~'c))
+         (~f (breeze.quiescent.dom/js-props ~'attrs) ~'c))
        ([~'attrs ~'c1 ~'c2]
-         (~f (quiescent.dom/js-props ~'attrs) ~'c1 ~'c2))
+         (~f (breeze.quiescent.dom/js-props ~'attrs) ~'c1 ~'c2))
        ([~'attrs ~'c1 ~'c2 ~'c3]
-         (~f (quiescent.dom/js-props ~'attrs) ~'c1 ~'c2 ~'c3))
+         (~f (breeze.quiescent.dom/js-props ~'attrs) ~'c1 ~'c2 ~'c3))
        ([~'attrs ~'c1 ~'c2 ~'c3 ~'c4]
-         (~f (quiescent.dom/js-props ~'attrs) ~'c1 ~'c2 ~'c3 ~'c4))
+         (~f (breeze.quiescent.dom/js-props ~'attrs) ~'c1 ~'c2 ~'c3 ~'c4))
        ([~'attrs ~'c1 ~'c2 ~'c3 ~'c4 ~'c5 & ~'children]
          (let [a# (cljs.core/make-array 6)]
-           (aset a# 0 (quiescent.dom/js-props ~'attrs))
+           (aset a# 0 (breeze.quiescent.dom/js-props ~'attrs))
            (aset a# 1 ~'c1)
            (aset a# 2 ~'c2)
            (aset a# 3 ~'c3)
@@ -38,7 +38,7 @@
       (nil? attrs) nil
       (instance? JSValue attrs) attrs
       (map? attrs) (cljs.tagged-literals/read-js attrs)
-      :else (list 'quiescent.dom/js-props attrs))))
+      :else (list 'breeze.quiescent.dom/js-props attrs))))
 
 (defmacro ^:private tag-macro*
   "Define a macro which calls a React.DOM factory."

@@ -1,6 +1,6 @@
-(ns quiescent.dom
+(ns breeze.quiescent.dom
   (:refer-clojure :exclude [map mask meta time])
-  (:require-macros [quiescent.dom :as dm])
+  (:require-macros [breeze.quiescent.dom :as dm])
   (:require cljsjs.react
             cljsjs.react.dom
             [goog.object :as gobj]))

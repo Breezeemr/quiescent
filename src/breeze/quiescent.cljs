@@ -57,6 +57,8 @@
                                                   (aget (. *component* -props) "statics")))}]
     (when-some [n (or (:displayName m) (not-empty (.-name renderer)))]
       (set! (.-displayName react-map) n))
+    (when-some [n (:getDerivedStateFromError m)]
+      (set! (.-getDerivedStateFromError react-map) n))
     (when-some [f (:getInitialState m)]
       (set! (.-getInitialState react-map)
         (wrapped-lifecycle-method #js {:value (f)})))
@@ -83,6 +85,9 @@
         (wrapped-lifecycle-method (. f apply *component* args))))
     (when-some [f (:componentWillUnmount m)]
       (set! (.-componentWillUnmount react-map)
+        (wrapped-lifecycle-method (. f apply *component* args))))
+    (when-some [f (:componentDidCatch m)]
+      (set! (.-componentDidCatch react-map)
         (wrapped-lifecycle-method (. f apply *component* args))))
     (let [react-component (js/createReactClass react-map)
           q-wrapper (fn [value & statics]

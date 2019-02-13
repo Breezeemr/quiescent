@@ -48,7 +48,7 @@
           `(cljs.core/specify! ~o ~@proto+specs)))))
 
 (defmacro createClass [& specs]
-  `(js/React.createClass (createMixin ~@specs)))
+  `(js/createClass (createMixin ~@specs)))
 
 (defmacro defclass [name docstr & specs]
   (assert (symbol? name) "Must supply a symbol for name (as with def).")

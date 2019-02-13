@@ -57,8 +57,6 @@
                                                   (aget (. *component* -props) "statics")))}]
     (when-some [n (or (:displayName m) (not-empty (.-name renderer)))]
       (set! (.-displayName react-map) n))
-    (when-some [n (:getDerivedStateFromError m)]
-      (set! (.-getDerivedStateFromError react-map) n))
     (when-some [f (:getInitialState m)]
       (set! (.-getInitialState react-map)
         (wrapped-lifecycle-method #js {:value (f)})))
@@ -92,6 +90,8 @@
     (let [react-component (js/createReactClass react-map)
           q-wrapper (fn [value & statics]
                       (.createElement js/React react-component (assemble-props value statics)))]
+      (when-some [n (:getDerivedStateFromError m)]
+        (set! (.-getDerivedStateFromError react-component) n))
       (when-some [displayName (.-displayName react-map)]
         (set! (.-displayName q-wrapper) displayName))
       (when-some [example (:exampleArg m)]

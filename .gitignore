@@ -14,3 +14,5 @@ pom.xml.asc
 .idea/misc.xml
 *.iml
 resources/public/js
+.rebel_readline_history
+figwheel_server.log

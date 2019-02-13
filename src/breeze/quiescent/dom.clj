@@ -1,5 +1,5 @@
 (ns breeze.quiescent.dom
-  (:refer-clojure :exclude [map time])
+  (:refer-clojure :exclude [map meta time])
   (:require cljs.tagged-literals)
   (:import (cljs.tagged_literals JSValue)))
 
@@ -32,7 +32,7 @@
   Props will be converted to plain js objects shallowly (and at compile time if
   possible)."
   ([component]
-   (with-meta `(RE ~component nil) (meta &form)))
+   (with-meta `(RE ~component nil) (clojure.core/meta &form)))
   ([component props & children]
    (let [p (js-props* props)]
      (with-meta `(~'js/React.createElement ~component ~p ~@children) (clojure.core/meta &form)))))

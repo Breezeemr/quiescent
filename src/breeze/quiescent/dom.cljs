@@ -5,24 +5,40 @@
             cljsjs.react.dom
             [goog.object :as gobj]))
 
+(defn- js-props-iter [^not-native it]
+  (let [o #js{}]
+    (while ^boolean (.hasNext it)
+      (let [^not-native e (.next it)]
+        (gobj/set o (-name ^not-native (-key e)) (-val e))))
+    o))
+
+(defn- js-props-rkv [m]
+  (reduce-kv (fn [o k v] (gobj/set o (-name ^not-native k) v) o) #js{} m))
+
+(defn- js-props-rm [m]
+  (reduce (fn [o ^not-native e]
+            (gobj/set o (-name ^not-native (-key e)) (-val e)) o) #js{} m))
+
 (defn js-props
-  "Utility function. Takes an object which is (possibly) a
-  ClojureScript map. If the value is a ClojureScript map, convert it
-  to a JavaScript properties object. Otherwise, return the argument
-  unchanged."
+  "Takes an object which is (possibly) a ClojureScript map. If the value is a
+  ClojureScript map, convert it to a JS object shallowly. Otherwise, return the
+  argument unchanged.
+
+  Used to convert maps to js before passing to react components that
+  expect raw js objects."
   [obj]
   (cond
     (nil? obj) nil
+    (map? obj) (cond
+                 (iterable? obj)
+                 (js-props-iter (iter obj))
 
-    (satisfies? IKVReduce obj)
-    (reduce-kv (fn [o k v] (gobj/set o (name k) v) o) #js{} obj)
+                 (satisfies? IKVReduce obj)
+                 (js-props-rkv obj)
 
-    (map? obj)
-    (reduce (fn [o [k v]] (gobj/set o (name k) v) o) #js{} obj)
-
+                 :else
+                 (js-props-rm obj))
     :else obj))
-
-(dm/define-tag-functions)
 
 (defn render
   "`ReactDOM.render` wrapper"

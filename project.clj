@@ -31,12 +31,12 @@
                                         [lein-figwheel "0.5.18"]]
                    :cljsbuild
                    {:builds
-                    [{:source-paths ["src" "examples/src"]
+                    [{:source-paths ["src" "test"]
                       :id           "dev-cljs"
                       :figwheel     true
                       :compiler
                       {:output-to        "resources/public/js/main.js"
                        :output-dir       "resources/public/js/out"
-                       :main             "breeze.quiescent"
+                       :main             "breeze.quiescent-test"
                        :asset-path       "js/out"
                        :closure-warnings {:non-standard-jsdoc :off}}}]}}})

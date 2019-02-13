@@ -10,6 +10,7 @@
                  [cljsjs/react "16.8.1-0"]
                  [cljsjs/react-dom "16.8.1-0"]]
   :source-paths ["src"]
+  :resource-paths ^:replace []
   :release-tasks [["vcs" "assert-committed"]
                   ["change" "version"
                    "leiningen.release/bump-version" "release"]
@@ -27,8 +28,6 @@
                     [figwheel-sidecar "0.5.18"
                      :exclusions [org.clojure/clojure cljsjs/react org.clojure/clojurescript]]
                     [nrepl/nrepl "0.6.0"]]
-                   ;; :source-paths     ["src"]
-                   #_#_:resource-paths ["examples/resources"]
                    :plugins            [[lein-cljsbuild "1.1.0"]
                                         [lein-figwheel "0.5.18"]]
                    :cljsbuild

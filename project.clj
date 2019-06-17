@@ -1,4 +1,4 @@
-(defproject com.breezeehr/quiescent "0.2.0-SNAPSHOT"
+(defproject com.breezeehr/quiescent "0.2.0"
   :description "A minimal, functional ClojureScript wrapper for ReactJS"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}

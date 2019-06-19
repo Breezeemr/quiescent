@@ -1,5 +1,6 @@
 (ns breeze.quiescent
   (:require cljsjs.react
+            cljsjs.create-react-class
             [goog.object :as gobj])
   (:require-macros [breeze.quiescent :as q :refer [wrapped-lifecycle-method]]))
 
@@ -83,9 +84,14 @@
     (when-some [f (:componentWillUnmount m)]
       (set! (.-componentWillUnmount react-map)
         (wrapped-lifecycle-method (. f apply *component* args))))
-    (let [react-component (.createClass js/React react-map)
+    (when-some [f (:componentDidCatch m)]
+      (set! (.-componentDidCatch react-map)
+        (wrapped-lifecycle-method (. f apply *component* args))))
+    (let [react-component (js/createReactClass react-map)
           q-wrapper (fn [value & statics]
                       (.createElement js/React react-component (assemble-props value statics)))]
+      (when-some [n (:getDerivedStateFromError m)]
+        (set! (.-getDerivedStateFromError react-component) n))
       (when-some [displayName (.-displayName react-map)]
         (set! (.-displayName q-wrapper) displayName))
       (when-some [example (:exampleArg m)]
